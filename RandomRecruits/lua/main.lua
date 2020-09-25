@@ -93,7 +93,7 @@ on_event("start", function()
 	result = options[result.index]
 	wesnoth.set_variable("RandomRecruits_enabled", result.enable)
 	if result.enable then
-		for _side_number, side in ipairs(wesnoth.sides) do
+		for _, side in ipairs(wesnoth.sides) do
 			generate_units(side)
 		end
 	end
