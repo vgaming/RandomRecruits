@@ -54,11 +54,10 @@ local function find_leader(side)
 end
 
 local function generate_units(side)
-	if not wesnoth.get_variable("RandomRecruits_enabled") then
+	side = side.side and side or wesnoth.sides[wesnoth.current.side]
+	if not wesnoth.get_variable("RandomRecruits_enabled_" .. side.side) then
 		return
 	end
-	side = side.side and side or wesnoth.sides[wesnoth.current.side]
-	side.recruit = {};
 	local leader = find_leader(side)
 	if leader == nil then
 		return
@@ -91,10 +90,13 @@ on_event("start", function()
 	local label = "Activate RandomRecruits add-on?"
 	local result = randomrecruits.show_dialog { label = label, options = options, can_cancel = false }
 	result = options[result.index]
-	wesnoth.set_variable("RandomRecruits_enabled", result.enable)
 	if result.enable then
 		for _, side in ipairs(wesnoth.sides) do
-			generate_units(side)
+			if #side.recruit > 0 then
+				side.recruit = {};
+				wesnoth.set_variable("RandomRecruits_enabled_" .. side.side, true)
+				generate_units(side)
+			end
 		end
 	end
 end)
