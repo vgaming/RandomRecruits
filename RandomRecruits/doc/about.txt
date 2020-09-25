@@ -1,4 +1,5 @@
 Get random recruits at the beginning of each turn!
 
-Recruits are picked randomly from your Era.
-Recruitment stops when there's not enough gold to buy the next unit, or if the leader is not at a keep.
+To get a recruit, place your leader in castle/keep, end turn.
+
+You need to have sufficient gold if next unit is expensive (randomized each turn).
