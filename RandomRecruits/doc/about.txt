@@ -1,1 +1,4 @@
 Generate random recruits at the beginning of each turn!
+
+Recruits are picked randomly from your Era.
+Recruitment stops when there's not enough gold to buy the next unit, or if the leader is not at a keep.
