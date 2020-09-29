@@ -1,5 +1,3 @@
 Get random recruits at the beginning of each turn!
 
-To get a recruit, place your leader in castle/keep, end turn.
-
-You need to have sufficient gold if next unit is expensive (randomized each turn).
+To get a recruit, place your leader in castle/keep, end turn. You need to have at least 10 gold

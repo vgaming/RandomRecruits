@@ -63,16 +63,12 @@ local function generate_units(side)
 	if leader == nil then
 		return
 	end
-	while true do
+	while side.gold >= 10 do
 		local recruit_type = random_recruit()
-		if side.gold >= wesnoth.unit_types[recruit_type].cost then
-			local unit = wesnoth.create_unit { type = recruit_type, side = side.side }
-			local x, y = wesnoth.find_vacant_tile(leader.x, leader.y, unit)
-			wesnoth.put_unit(unit, x, y)
-			side.gold = side.gold - wesnoth.unit_types[recruit_type].cost
-		else
-			break
-		end
+		local unit = wesnoth.create_unit { type = recruit_type, side = side.side }
+		local x, y = wesnoth.find_vacant_tile(leader.x, leader.y, unit)
+		wesnoth.put_unit(unit, x, y)
+		side.gold = side.gold - wesnoth.unit_types[recruit_type].cost
 	end
 end
 
@@ -96,6 +92,7 @@ on_event("start", function()
 			if #side.recruit > 0 then
 				side.recruit = {};
 				wesnoth.set_variable("RandomRecruits_enabled_" .. side.side, true)
+				side.gold = side.gold - 5
 				generate_units(side)
 			end
 		end
