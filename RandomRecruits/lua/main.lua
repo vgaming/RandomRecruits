@@ -25,7 +25,8 @@ local function init_era()
 	for multiplayer_side in helper.child_range(wesnoth.game_config.era, "multiplayer_side") do
 		local units = multiplayer_side.recruit or multiplayer_side.leader or ""
 		for _, unit in ipairs(split_comma(units)) do
-			if era_set[unit] == nil and wesnoth.unit_types[unit] then
+			local unit_type = wesnoth.unit_types[unit]
+			if era_set[unit] == nil and unit_type and unit_type.level == 1 then
 				era_set[unit] = true
 				era_array[#era_array + 1] = unit
 			end
