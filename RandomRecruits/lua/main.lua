@@ -46,32 +46,6 @@ local function random_recruit()
 	return era_array[helper.rand(era_unit_rand_string)]
 end
 
-local function find_leader(side)
-	for _, leader in ipairs(wesnoth.get_units { canrecruit = true, side = side.side }) do
-		if wesnoth.get_terrain_info(wesnoth.get_terrain(leader.x, leader.y)).keep then
-			return leader
-		end
-	end
-end
-
-local function generate_units(side)
-	side = side.side and side or wesnoth.sides[wesnoth.current.side]
-	if not wesnoth.get_variable("RandomRecruits_enabled_" .. side.side) then
-		return
-	end
-	local leader = find_leader(side)
-	if leader == nil then
-		return
-	end
-	while side.gold >= 10 do
-		local recruit_type = random_recruit()
-		local unit = wesnoth.create_unit { type = recruit_type, side = side.side }
-		local x, y = wesnoth.find_vacant_tile(leader.x, leader.y, unit)
-		wesnoth.put_unit(unit, x, y)
-		side.gold = side.gold - wesnoth.unit_types[recruit_type].cost
-	end
-end
-
 on_event("start", function()
 	local options = {
 		{
@@ -90,15 +64,29 @@ on_event("start", function()
 	if result.enable then
 		for _, side in ipairs(wesnoth.sides) do
 			if #side.recruit > 0 then
-				side.recruit = {};
+				side.recruit = { "Peasant" };
 				wesnoth.set_variable("RandomRecruits_enabled_" .. side.side, true)
 				side.gold = side.gold - 5
-				generate_units(side)
 			end
 		end
 	end
 end)
 
-on_event("turn refresh", generate_units)
+on_event("prerecruit", function(ctx)
+	local original_unit = wesnoth.get_unit(ctx.x1, ctx.y1)
+	local side = wesnoth.sides[wesnoth.current.side]
+	side.gold = side.gold + wesnoth.unit_types[original_unit.type].cost
+	wesnoth.erase_unit(ctx.x1, ctx.y1)
+
+	local replacement_type = random_recruit()
+	local replacement_unit = wesnoth.create_unit {
+		type = replacement_type,
+		side = side.side,
+		moves = 0
+	}
+	wesnoth.put_unit(replacement_unit, ctx.x1, ctx.y1)
+	side.gold = side.gold - wesnoth.unit_types[replacement_type].cost
+
+end)
 
 -- >>
