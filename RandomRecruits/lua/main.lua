@@ -64,7 +64,7 @@ on_event("start", function()
 	if result.enable then
 		for _, side in ipairs(wesnoth.sides) do
 			if #side.recruit > 0 then
-				side.recruit = { "Peasant" };
+				side.recruit = { random_recruit(), random_recruit(), random_recruit() };
 				wesnoth.set_variable("RandomRecruits_enabled_" .. side.side, true)
 				side.gold = side.gold - 5
 			end
@@ -72,21 +72,9 @@ on_event("start", function()
 	end
 end)
 
-on_event("prerecruit", function(ctx)
-	local original_unit = wesnoth.get_unit(ctx.x1, ctx.y1)
+on_event("prerecruit", function()
 	local side = wesnoth.sides[wesnoth.current.side]
-	side.gold = side.gold + wesnoth.unit_types[original_unit.type].cost
-	wesnoth.erase_unit(ctx.x1, ctx.y1)
-
-	local replacement_type = random_recruit()
-	local replacement_unit = wesnoth.create_unit {
-		type = replacement_type,
-		side = side.side,
-		moves = 0
-	}
-	wesnoth.put_unit(replacement_unit, ctx.x1, ctx.y1)
-	side.gold = side.gold - wesnoth.unit_types[replacement_type].cost
-
+	side.recruit = { random_recruit(), random_recruit(), random_recruit() };
 end)
 
 -- >>
