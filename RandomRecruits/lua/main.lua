@@ -74,7 +74,9 @@ end)
 
 on_event("prerecruit", function()
 	local side = wesnoth.sides[wesnoth.current.side]
-	side.recruit = { random_recruit(), random_recruit(), random_recruit() };
+	if wesnoth.get_variable("RandomRecruits_enabled_" .. side.side) then
+		side.recruit = { random_recruit(), random_recruit(), random_recruit() };
+	end
 end)
 
 -- >>
