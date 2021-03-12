@@ -46,6 +46,21 @@ local function random_recruit()
 	return era_array[helper.rand(era_unit_rand_string)]
 end
 
+local function random_recruit_array(desired_length)
+	local result = {}
+	local set = {}
+	local attempt = 0
+	while attempt < 100 and #result < desired_length do
+		local unit = random_recruit()
+		if set[unit] == nil then
+			set[unit] = true
+			result[#result + 1] = unit
+		end
+		attempt = attempt + 1
+	end
+	return result
+end
+
 on_event("start", function()
 	local options = {
 		{
@@ -64,7 +79,7 @@ on_event("start", function()
 	if result.enable then
 		for _, side in ipairs(wesnoth.sides) do
 			if #side.recruit > 0 then
-				side.recruit = { random_recruit(), random_recruit(), random_recruit() };
+				side.recruit = random_recruit_array(3)
 				wesnoth.set_variable("RandomRecruits_enabled_" .. side.side, true)
 				side.gold = side.gold - 5
 			end
@@ -75,7 +90,7 @@ end)
 on_event("prerecruit", function()
 	local side = wesnoth.sides[wesnoth.current.side]
 	if wesnoth.get_variable("RandomRecruits_enabled_" .. side.side) then
-		side.recruit = { random_recruit(), random_recruit(), random_recruit() };
+		side.recruit = random_recruit_array(3)
 	end
 end)
 
