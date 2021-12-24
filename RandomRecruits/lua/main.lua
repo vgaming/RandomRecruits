@@ -1,4 +1,4 @@
--- << afterlife/main_defense
+-- << RandomRecruits/main.lua
 
 local wesnoth = wesnoth
 local ipairs = ipairs
@@ -22,7 +22,7 @@ local era_array = {}
 local era_set = {}
 
 local function init_era()
-	for multiplayer_side in helper.child_range(wesnoth.game_config.era, "multiplayer_side") do
+	for multiplayer_side in helper.child_range(wesnoth.scenario.era, "multiplayer_side") do
 		local units = multiplayer_side.recruit or multiplayer_side.leader or ""
 		for _, unit in ipairs(split_comma(units)) do
 			local unit_type = wesnoth.unit_types[unit]
@@ -34,7 +34,7 @@ local function init_era()
 	end
 end
 if not pcall(init_era) then
-	local msg = "Failed to load Era " .. wesnoth.game_config.mp_settings.mp_era
+	local msg = "Failed to load Era " .. wesnoth.scenario.mp_settings.mp_era
 	wesnoth.wml_actions.message { caption = "Random Recruits", message = msg }
 	wesnoth.message("Random Recruits", msg)
 	wesnoth.wml_actions.endlevel { result = "defeat" }
