@@ -22,19 +22,34 @@ local era_array = {}
 local era_set = {}
 
 local function init_era()
-	for multiplayer_side in helper.child_range(wesnoth.scenario.era, "multiplayer_side") do
-		local units = multiplayer_side.recruit or multiplayer_side.leader or ""
-		for _, unit in ipairs(split_comma(units)) do
-			local unit_type = wesnoth.unit_types[unit]
-			if era_set[unit] == nil and unit_type and unit_type.level == 1 then
-				era_set[unit] = true
-				era_array[#era_array + 1] = unit
+	if wesnoth.scenario.era then
+		for multiplayer_side in helper.child_range(wesnoth.scenario.era, "multiplayer_side") do
+			local units = multiplayer_side.recruit or multiplayer_side.leader or ""
+			for _, unit in ipairs(split_comma(units)) do
+				local unit_type = wesnoth.unit_types[unit]
+				if era_set[unit] == nil and unit_type and unit_type.level == 1 then
+					era_set[unit] = true
+					era_array[#era_array + 1] = unit
+				end
 			end
 		end
+		era_set = nil  -- free up memory
+	else
+		era_array = {
+			"Cavalryman", "Horseman", "Spearman", "Fencer", "Heavy Infantryman", "Bowman", "Mage",
+			"Merman Fighter", "Elvish Fighter", "Elvish Archer", "Elvish Shaman", "Elvish Scout", "Wose",
+			"Merman Hunter", "Orcish Grunt", "Troll Whelp", "Wolf Rider", "Orcish Archer",
+			"Orcish Assassin", "Naga Fighter", "Skeleton", "Skeleton Archer", "Ghost", "Dark Adept",
+			"Ghoul", "Dwarvish Guardsman", "Dwarvish Fighter", "Dwarvish Ulfserker", "Dwarvish Thunderer",
+			"Thief", "Poacher", "Footpad", "Gryphon Rider", "Drake Burner", "Drake Clasher",
+			"Drake Glider", "Drake Fighter", "Saurian Skirmisher", "Saurian Augur"
+		}
 	end
 end
 if not pcall(init_era) then
-	local msg = "Failed to load Era " .. wesnoth.scenario.mp_settings.mp_era
+	local era_id =	wesnoth.scenario.mp_settings and wesnoth.scenario.mp_settings.mp_era
+		or "default_era"
+	local msg = "Failed to load Era " .. era_id
 	wesnoth.wml_actions.message { caption = "Random Recruits", message = msg }
 	wesnoth.message("Random Recruits", msg)
 	wesnoth.wml_actions.endlevel { result = "defeat" }
