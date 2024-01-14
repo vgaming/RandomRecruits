@@ -1,4 +1,10 @@
--- << RandomRecruits/main.lua
+-- << main | RandomRecruits
+if rawget(_G, "main | RandomRecruits") then
+	-- TODO: remove this code once https://github.com/wesnoth/wesnoth/issues/8157 is fixed
+	return
+else
+	rawset(_G, "main | RandomRecruits", true)
+end
 
 local wesnoth = wesnoth
 local ipairs = ipairs
@@ -58,7 +64,7 @@ end
 
 local era_unit_rand_string = "1.." .. #era_array
 local function random_recruit()
-	return era_array[helper.rand(era_unit_rand_string)]
+	return era_array[mathx.random_choice(era_unit_rand_string)]
 end
 
 local function random_recruit_array(desired_length)

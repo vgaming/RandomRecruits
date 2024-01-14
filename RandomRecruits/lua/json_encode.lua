@@ -1,4 +1,10 @@
--- << RandomRecruits_json_encode
+-- << json_encode | RandomRecruits
+if rawget(_G, "json_encode | RandomRecruits") then
+	-- TODO: remove this code once https://github.com/wesnoth/wesnoth/issues/8157 is fixed
+	return
+else
+	rawset(_G, "json_encode | RandomRecruits", true)
+end
 
 -- wesnoth.dofile("~add-ons/RandomRecruits/lua/json_encode.lua")
 
